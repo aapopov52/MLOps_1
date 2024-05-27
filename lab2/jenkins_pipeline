@@ -1,0 +1,21 @@
+#!/bin/bash
+DIR_BUILD="$WORKSPACE"
+
+mkdir $WORKSPACE
+
+git clone https://github.com/aapopov52/MLOps_1.git
+
+cp $DIR_BUILD/MLOps_1/lab1/* $DIR_BUILD/
+
+sudo rm -r $DIR_BUILD/MLOps_1
+
+python3 -m venv "$DIR_BUILD/env"
+
+source "$DIR_BUILD/bin/activate"
+
+python3 -m pip install --upgrade pip
+pip install -r "$DIR_BUILD/requirements.txt"
+
+bash "$DIR_BUILD/pipeline.sh"
+
+echo "отработал"
