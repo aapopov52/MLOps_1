@@ -6,7 +6,7 @@ RUN pip install --requirement /tmp/requirements.txt # устновка зависимотсей
 
 
 # копирование файлов проекта (вся папка на локальном диске копируется в контейнер)
-COPY ./src /app/src
+COPY . /app/src
 WORKDIR /app # вместо cd в Linux - переход в папку
 
 #запуск скрипта
