@@ -1,0 +1,40 @@
+#!/bin/bash
+DIR_BUILD="$WORKSPACE"
+
+mkdir $WORKSPACE
+
+echo $DIR_BUILD
+#забираем всё с Github
+git clone https://github.com/aapopov52/MLOps_1.git
+#Копируем файлы из итогового проекта в рабочий каталог
+cp $DIR_BUILD/MLOps_1/Lab_Itog/* $DIR_BUILD/
+# Удаляем всё, что скопировали из Git
+rm -r $DIR_BUILD/MLOps_1/
+
+# В Дженкинсе готовим модельку, создаём Докер файл 
+#Создаём вирт окружение
+python3 -m venv "$DIR_BUILD/env"
+
+source "$DIR_BUILD/bin/activate"
+
+python3 -m pip install --upgrade pip
+pip install -r "$DIR_BUILD/src_iris_data/requirements.txt"
+# Получаем данные iris
+python3 src_iris_data/get_iris_data.py
+
+# Запускаем тесты
+pytest src_iris_data/test_iris_data.py
+
+# Создаём модель
+python3 src_iris_data/add_model_iris_data.py
+# копируем файл модели в папку докера
+cp $DIR_BUILD/iris_model.pkl $DIR_BUILD/docker_data/
+rm $DIR_BUILD/iris_model.pkl
+rm $DIR_BUILD/iris_dataset.csv
+
+# Делаем контейнер докера
+cd docker_data
+docker image build -t docker_file:0.1 -f docker_file .
+docker container run docker_file:0.1
+
+echo "отработал"
